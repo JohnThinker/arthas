@@ -24,6 +24,7 @@ if ["%~1"]==[""] (
   goto exit_bat
 )
 
+set JAVA_TOOL_OPTIONS
 set AGENT_JAR=%BASEDIR%\arthas-agent.jar
 set CORE_JAR=%BASEDIR%\arthas-core.jar
 
@@ -67,6 +68,7 @@ if not %1/==/ (
 
 if not "%telnet-port%"=="" set TELNET_PORT=%telnet-port%
 if not "%http-port%"=="" set HTTP_PORT=%http-port%
+if not "%command-locations%"=="" set COMMAND_LOCATIONS=%command-locations%
 
 echo JAVA_HOME: %JAVA_HOME%
 echo telnet port: %TELNET_PORT%
@@ -97,9 +99,10 @@ echo NB: JAVA_HOME should point to a JDK not a JRE.
 goto exit_bat
 
 :okJava
-set JAVACMD="%JAVA_HOME%"\bin\java
+set EXTRA_ATTACH_ARGS=
+if not "%COMMAND_LOCATIONS%"=="" set EXTRA_ATTACH_ARGS=%EXTRA_ATTACH_ARGS% -command-locations "%COMMAND_LOCATIONS%"
 
-%JAVACMD% -Dfile.encoding=UTF-8 %BOOT_CLASSPATH% -jar "%CORE_JAR%" -pid "%PID%"  -target-ip 127.0.0.1 -telnet-port %TELNET_PORT% -http-port %HTTP_PORT% -core "%CORE_JAR%" -agent "%AGENT_JAR%"
+%JAVACMD% -Dfile.encoding=UTF-8 %BOOT_CLASSPATH% -jar "%CORE_JAR%" -pid "%PID%"  -target-ip 127.0.0.1 -telnet-port %TELNET_PORT% -http-port %HTTP_PORT% %EXTRA_ATTACH_ARGS% -core "%CORE_JAR%" -agent "%AGENT_JAR%"
 if %ERRORLEVEL% NEQ 0 goto exit_bat
 if %exitProcess%==1 goto exit_bat
 goto attachSuccess
@@ -116,5 +119,5 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 :exit_bat
-if %exitProcess%==1 exit %ERROR_CODE%
+if "%exitProcess%"=="1" exit %ERROR_CODE%
 exit /B %ERROR_CODE%

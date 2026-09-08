@@ -11,6 +11,7 @@
 /nb-configuration.xml
 **/target
 core/src/main/resources/com/taobao/arthas/core/res/version
+tunnel-server/src/main/resources/static
 **/*.orig
 
 site/src/site/sphinx/_build
@@ -19,3 +20,14 @@ site/src/site/sphinx/en/_build
 **/__pycache__
 
 dependency-reduced-pom.xml
+pom.xml.versionsBackup
+.pmd
+**/.flattened-pom.xml
+**/.idea/**
+**/cmake-build-debug/**
+
+# VSCode
+.vscode/
+
+# integration-test (python/expect)
+integration-test/telnet-stop-leak/work*/
